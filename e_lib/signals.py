@@ -1,9 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import print_function
+import os
+import django
+from django.conf import settings
+# import sys
+# sys.path.append('/home/damir/drive_app/')
+# print (sys.path)
+# # from drive_app import settings 
+# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "drive_app.settings")
+# django.setup()
 import os.path
-import sys
 import codecs
+
+print ("Name: {}".format(__name__))
+
 #from apiclient import errors
 from googleapiclient import discovery
 from httplib2 import Http
@@ -11,12 +22,22 @@ from oauth2client import file, client, tools
 import re, time
 import ast 
 from django.db.models.signals import post_save
-from e_lib.models import UpdateLinks
+from .models import UpdateLinks
+from django.dispatch import receiver
+
+# new = UpdateLinks(title = "newest")
+
+# new.save()
+
+# @receiver(post_save, sender = UpdateLinks)
+# def greeting(sender, **kwargs):
+#         print ("Hello")
+
+# post_save.connect(greeting, sender = UpdateLinks)
 
 
-sys.path.append('/home/damir/drive_app/e_lib/CicaGoran')
+# sys.path.append('/home/damir/drive_app/e_lib/CicaGoran')
 
-print (__name__)
 
 
 
@@ -175,19 +196,12 @@ def get_folder_data(folder_id):
 
 # time.sleep(1)
 
-def getLinks(sender, instance, **kwargs):
+@receiver(post_save, sender = UpdateLinks)
+def getLinks(sender, **kwargs):
 
     folder_id = input("Enter the main folder id:")
 
     data_list = get_folder_data(folder_id)
-
-# a = str(data_list)
-# b = ast.literal_eval(a)
-# print (type(b))
-# for item in b:
-#     print (type(item))
-
-
 
     to_file = 'data_list.txt'
     complete_name = os.path.join(save_to_path, to_file)
@@ -195,7 +209,7 @@ def getLinks(sender, instance, **kwargs):
             f.write(str(data_list))
 
 
-post_save.connect(getLinks, sender = UpdateLinks)
+# post_save.connect(getLinks, sender = UpdateLinks)
 
 
 
