@@ -18,17 +18,25 @@ from django.db.models.signals import post_save
 # Create your models here.
 
 
-class Folder(models.Model):
-	Name=models.CharField(max_length=100)
-	Folder_id=models.CharField(max_length=100)
+# class Folder(models.Model):
+# 	Name=models.CharField(max_length=100)
+# 	Folder_id=models.CharField(max_length=100)
+
+# 	def __str__(self):
+# 		return self.Name
 
 class Book(models.Model):
+	Book_id = models.CharField(max_length=100, null=True, blank=True)
 	Name = models.CharField(max_length=60)
-	Link = models.CharField(max_length=100)
+	Link = models.CharField(max_length=100, null = True, blank = True)
 	Folder_id = models.CharField(max_length=100)
+
+	def __str__(self):
+		return self.Name
 
 class UpdateLinks(models.Model):
 	title = models.CharField(max_length = 50)
+	Main_folder_id = models.CharField(max_length = 100, null=True, blank=True)
 
 	def __str__(self):
 		return self.title

@@ -1,0 +1,42 @@
+* {
+	font-family: calibri;
+}
+
+li {
+	cursor: pointer;
+}
+
+.btn {
+	text-align: left;
+}
+
+.col-sm {
+	padding-top: 15px;
+}
+
+.col-md-6 {
+	padding-top: 15px;
+}
+
+.col-sm li{
+    font-size: 1.25rem;
+}
+
+.closed {
+	color: #fc9d03;
+	
+}
+
+.open{
+	display: none; 
+	color: #fc9d03;	
+}
+
+.container-sm {
+	background-color: #DADADA;
+}
+
+.container {
+	background-color: #DADADA;
+}
+

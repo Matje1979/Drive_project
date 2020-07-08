@@ -1,0 +1,31 @@
+{% extends 'e_lib/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="col-8 mt-3 mb-5 mx-auto">
+    <form  class="form-inline justify-content-center" action="/results/" method="get">
+        <input type="text" name="q">
+        <button type="submit" class="btn btn-outline-success" style="margin-left: 10px;">Pretraga</button>
+    </form>
+</div>
+
+<div class="container-sm w-50 h-75" style="margin-top: 20px;">
+    <div class="row h-100">
+        <div class="col-md-12 h-100" style="overflow: auto;">
+        	{% if result != None %}
+            <ul>
+                {% for item in result %}
+                    {% if item.Link != None %}   
+                        <li class="btn" data-id="{{ item.Book_id }}"><a href="{{ item.Link }}">{{ item.Name }}</a></li><br> 
+                    {% endif %} 
+                {% endfor %}
+            </ul>
+            {% else %}
+                <h3>{{ notfound }}</h3>
+            {% endif %}
+        </div>
+    </div>
+</div>
+  
+{% endblock content %}

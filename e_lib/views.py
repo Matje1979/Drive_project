@@ -1,8 +1,11 @@
 from django.shortcuts import render, HttpResponse
-from .models import Book, Folder
+from .models import Book, UpdateLinks
 # from .tasks import get_folder_data
 import ast
 import sys, os
+from django.http import JsonResponse
+from django.forms.models import model_to_dict
+from helper.sort import sort_f
 
 sys.path.append('/home/damir/drive_app/e_lib/')
 
@@ -14,25 +17,90 @@ complete_name = os.path.join(save_to_path, to_file)
 
 
 def home(request):
-    folders = Folder.objects.filter(Folder_id="0Bzg8AlBqbBUnaEdrZmhaOVVJSVE")
-    context = {'folders': folders}
+
+    """Collects main folders and presents them on the frontpage"""
+
+    print ('Hello')
+
+    main_fs = []
+    args = []
+
+    for link in UpdateLinks.objects.all():           
+        
+        args.append(link.Main_folder_id)       #collecting id's of main folders/books
+  
+
+    for arg in args:
+        q = Book.objects.filter(Folder_id=arg)      #extracting main folders/books from Book instances for frontpage
+        main_fs.append(q.values())              #turning querysets into lists of dictionaries with q.values() and appending them to a new list
+
+   
+    main_folders = []                       
+    for queryset in main_fs:                  
+        queryset = list(queryset)              #queryet content is a list of dicts but it itself is still a queryset, so it is transformed into list. 
+                                               #this is all done because the sorting function sort_f works with lists of dicts, and not querysets.
+        main_folders.append(sort_f(queryset, 'Name'))
+
+    
+    context = {'main_folders': main_folders}
     return render(request, 'e_lib/M.html', context)
 
+def searchResults(request):
 
 
-def folders(request, info):
-    return render(request, f'e_lib/{info}')
+    print ('Hello, I am working!')
 
+    if 'q' in request.GET and request.GET['q']:
+        q = request.GET['q']
+        
+        result = Book.objects.filter(Name__icontains = q)
+        print (result)
+
+        context = {'result': result}
+    else:
+       notfound = "Nista nije nadjeno."
+       context = {'notfound': notfound}
+
+   
+    return render(request, 'e_lib/results.html', context)
 
 def update(request):
-    
+
+    """ Updates database with data about google drives stored in a .txt file on the server."""
+
     with open(complete_name, 'r') as lines:
         lines = lines.read()
-        a = ast.literal_eval(lines)
+        a = ast.literal_eval(lines) 
+        # print (a)
+
+        count = 0
+        count_item = 0
 
         for item in a:
-            if 'webViewLink' in item.keys():
-                Book.objects.create(Name = item['name'], Folder_id = item['folder_id'], Link = item['webViewLink'])
+            
+            if 'webViewLink' in item.keys(): #if item is a folder it does not have the key 'webViewLink' 
+                Book.objects.create(Book_id = item['id'], Name = item['name'], Folder_id = item['folder_id'], Link = item['webViewLink'])
             else:
-                Folder.objects.create(Name = item['name'], Folder_id = item['folder_id'])
+                Book.objects.create(Book_id = item['id'], Name = item['name'], Folder_id = item['folder_id'])
+
+            # a = Book.objects.all()
+            # b = len(a)
+           
+
     return HttpResponse('<h2>Database updated.</h2>')
+
+def getBooks(request, parent_id):
+
+    """Responds to an AJAX request. Returns a list of books/folders in a folder."""
+
+    items = Book.objects.filter(Folder_id = parent_id).order_by('Name')
+    new_list = []
+    for item in items:
+        new_list.append(model_to_dict(item))
+
+        
+    return JsonResponse({'new_list': new_list}, safe = False)
+
+
+
+

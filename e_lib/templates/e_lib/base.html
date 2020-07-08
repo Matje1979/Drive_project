@@ -1,13 +1,19 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html style="height: 100%;">
 <head>
-	<title></title>
-	<link rel="stylesheet" type="text/css" href="{% static 'e_lib/style.css' %}">
+	<title>Internet biblioteka</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.1/css/all.css" integrity="sha384-xxzQGERXS00kBmZW/6qxqJPyxW3UR0BPsL4c8ILaIWXva5kFi7TxkIIaMiKtqV1Q" crossorigin="anonymous">	
+	<link rel="stylesheet" type="text/css" href="{% static 'e_lib/css/style.css' %}">
 </head>
-<body>
+<body style="height:100%;">
+	<h1 class="text-center font-weight-bold" style="margin-top: 20px;">Otvorena E-biblioteka<span style="margin-left: 20px;"><i class="far fa-folder-open"></i></span></h1><hr><br>
+	
     {% block content %}
     {% endblock content %}
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{% static 'e_lib/js/e_lib.js' %}"></script>
 </body>
 </html>
