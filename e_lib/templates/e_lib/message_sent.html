@@ -1,0 +1,11 @@
+{% extends 'e_lib/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="container d-flex justify-content-center kontakt-container" id="kontakt-container" onload="myFunction()" style="background-color: #FFFFFF;">
+	<!--<div class="content-section w-50 mx-auto mt-4">-->
+	<img class="mx-auto my-auto" id="disappear" src="{% static 'e_lib/data/message_sent_animation' %}">
+	<!--</div>-->
+</div>
+{% endblock content %}

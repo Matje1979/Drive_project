@@ -6,6 +6,7 @@ import sys, os
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
 from helper.sort import sort_f
+from .forms import MessageForm
 
 sys.path.append('/home/damir/drive_app/e_lib/')
 
@@ -25,15 +26,20 @@ def home(request):
     main_fs = []
     args = []
 
-    for link in UpdateLinks.objects.all():           
-        
+    for link in UpdateLinks.objects.all():  
+        # print ("This is one link: ", link)         
+        print ("*********************************************************************************************************")
         args.append(link.Main_folder_id)       #collecting id's of main folders/books
-  
+
+    # print ("These are link id's: ", args)
+    
 
     for arg in args:
+        print ("Id: ", arg)
         q = Book.objects.filter(Folder_id=arg)      #extracting main folders/books from Book instances for frontpage
+        print ("Queryset: ", q)
         main_fs.append(q.values())              #turning querysets into lists of dictionaries with q.values() and appending them to a new list
-
+    print ("Main_fs: ", main_fs)
    
     main_folders = []                       
     for queryset in main_fs:                  
@@ -44,6 +50,26 @@ def home(request):
     
     context = {'main_folders': main_folders}
     return render(request, 'e_lib/M.html', context)
+
+def kontakt(request):
+    if request.method == 'POST':
+        form = MessageForm(request.POST or None)
+        if form.is_valid():
+            form.save()
+            return render(request, 'e_lib/message_sent.html')
+    else:
+        form = MessageForm()
+
+    context = {
+        'form': form
+    }
+    return render(request, 'e_lib/kontakt.html', context)
+
+def o_nama(request):
+    return render(request, 'e_lib/o_nama.html')
+
+def statistika(request):
+    return render(request, 'e_lib/statistika.html')
 
 def searchResults(request):
 
@@ -98,9 +124,21 @@ def getBooks(request, parent_id):
     for item in items:
         new_list.append(model_to_dict(item))
 
+
         
     return JsonResponse({'new_list': new_list}, safe = False)
 
+def message_create_view(request):
+    form = MessageForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        form = MessageForm()
+
+    context = {
+        'form': form
+    }
+
+    return render(request, 'e_lib/kontakt.html', context)
 
 
 

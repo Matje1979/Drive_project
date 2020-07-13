@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'e_lib.apps.ELibConfig',
+    'crispy_forms',
     'background_task',
     'django.contrib.admin',
     'django.contrib.auth',

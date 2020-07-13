@@ -17,6 +17,7 @@ import ast
 from django.db.models.signals import post_save
 from .models import UpdateLinks, Book
 from django.dispatch import receiver
+from urllib.error import HTTPError
 
 
 
@@ -72,19 +73,21 @@ def get_folder_data(folder_id):
             pageToken = page_token).execute()
 
         for file in files.get('files', []):
-          
-            if file['mimeType'] == 'application/vnd.google-apps.folder':
-            
-                del file['webViewLink']
-                file['folder_id'] = folder_id
-                d.append(file)
-                d += get_folder_data(file['id'])#this recursive function is called the number of times equal to the number of folders.
-                check += 1
+            try:
+                if file['mimeType'] == 'application/vnd.google-apps.folder':
+                
+                    del file['webViewLink']
+                    file['folder_id'] = folder_id
+                    d.append(file)
+                    d += get_folder_data(file['id'])#this recursive function is called the number of times equal to the number of folders.
+                    check += 1
 
-            else:
-                file['folder_id'] = folder_id
-                c.append(file) #files are put into separate list because the need to be bellow the folders if they are on the same page.
-                count += 1
+                else:
+                    file['folder_id'] = folder_id
+                    c.append(file) #files are put into separate list because the need to be bellow the folders if they are on the same page.
+                    count += 1
+            except HTTPError:
+                pass
 
         page_token = files.get('nextPageToken', None)
         if page_token is None:
@@ -104,11 +107,11 @@ def getLinks(sender, instance, **kwargs):
 
     data_list = get_folder_data(folder_id)
 
-    for item in data_list:
-        try:
-            Book.objects.create(Name = item['name'], Link = item['webViewLink'], Folder_id = item['id'])
-        except KeyError:
-            Book.objects.create(Name = item['name'], Folder_id = item['id'])
+    # for item in data_list:
+    #     try:
+    #         Book.objects.create(Name = item['name'], Link = item['webViewLink'], Folder_id = item['id'])
+    #     except KeyError:
+    #         Book.objects.create(Name = item['name'], Folder_id = item['id'])
 
     to_file = 'data_list.txt'
     complete_name = os.path.join(save_to_path, to_file)

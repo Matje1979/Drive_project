@@ -13,6 +13,25 @@
     {% block content %}
     {% endblock content %}
 
+    <ul class="list-group list-group-horizontal d-flex justify-content-center mt-5 mb-5 list-bottom">
+        {% if 'o_nama' in request.path %}
+            <a href="{% url 'o_nama' %}"><li class="list-group-item active">O nama</li></a>
+        {% else %}
+            <a href="{% url 'o_nama' %}"><li class="list-group-item">O nama</li></a>
+        {% endif %}
+        {% if 'kontakt' in request.path %}
+            <a href="{% url 'kontakt' %}"><li class="list-group-item active">Kontakt</li></a>
+        {% else %}
+            <a href="{% url 'kontakt' %}"><li class="list-group-item">Kontakt</li></a>
+        {% endif %}
+        {% if 'statistika' in request.path %}
+            <a href="{% url 'statistika' %}"><li class="list-group-item active">Statistika</li></a>
+        {% else %}
+            <a href="{% url 'statistika' %}"><li class="list-group-item">Statistika</li></a>
+        {% endif %}
+
+    </ul>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="{% static 'e_lib/js/e_lib.js' %}"></script>
 </body>

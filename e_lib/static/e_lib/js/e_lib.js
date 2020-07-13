@@ -30,7 +30,7 @@ $(document).ready(function(){
 				dataType: 'json',
 				success: function(result) {     //here is what ajax will return
 					
-					list_html += "<ul";       //beggining of the folder list
+					list_html += "<ul>";       //beggining of the folder list
 					list_file_html += "<ul>";
 
 					for(var i=0; i < result.new_list.length; i++){ //is a JsonResponse returned by Django function. It is a json object of this form 
@@ -40,7 +40,7 @@ $(document).ready(function(){
 
 							//folder list content
 
-						    list_html += "><li class=\"btn\" data-id='" + result.new_list[i]['Book_id'] +  "'><i class=\"fas fa-folder closed\" style= \"margin-right: 15px;\"></i><i class=\"fas fa-folder-open open\" style=\"margin-right: 15px;\"></i>"  + result.new_list[i]['Name'] + "</li></ul>";
+						    list_html += "<li class=\"btn\" data-id='" + result.new_list[i]['Book_id'] +  "'><i class=\"fas fa-folder closed\" style= \"margin-right: 15px;\"></i><i class=\"fas fa-folder-open open\" style=\"margin-right: 15px;\"></i>"  + result.new_list[i]['Name'] + "</li><br>";
 						    
 					    } else {
 
@@ -65,13 +65,39 @@ $(document).ready(function(){
 				// }
 	            	
 			}) //closing ajax request block
-		
-		$(this).append(list_html);                                //presenting the list of (sub)folders of current (this) folder.
-		$(this).children('.closed').css('display', 'none');          // 'opening' the folder
-		$(this).children('.open').css('display', 'inline-block');
 
-		$('.col-md-6').children('ul').remove();        //remove currently displayed files (books) from the right hand side div.
-	    $('.col-md-6').prepend(list_file_html);        //add new file content to the div on the right.
+	    $(this).append(list_html);                                //presenting the list of (sub)folders of current (this) folder.
+        $(this).children('.closed').css('display', 'none');          // 'opening' the folder
+        $(this).children('.open').css('display', 'inline-block');
+        $('.col-md-6').children('ul').remove();        //remove currently displayed files (books) from the right hand side div.
+        $('.col-md-6').prepend(list_file_html);  
+
+        console.log('UrlsList: ',urlsList);
+        console.log('UrlsList.length: ',urlsList.length);
+
+        var index_list = [];
+
+	    for(let i = 0; i < urlsList.length; i++){
+	    		
+            if (urlsList[i] != id && $(this).parents(`li[data-id="${urlsList[i]}"]`).length != 1){
+            	console.log('Item not clicked')
+            	$(`li[data-id="${urlsList[i]}"]`).children('ul').remove();
+            	$(`li[data-id="${urlsList[i]}"]`).children('.open').css('display', 'none');
+            	console.log('urlsList[i]: ', urlsList[i])
+            	console.log($(this).data('id'))
+            	$(`li[data-id="${urlsList[i]}"]`).children('.closed').css('display', 'inline-block');
+            	index_list.push(i) //ova linija uzrokuje da petlja stane nakon prvog kruga. Da bi normalno funkcionisala ovo mora da ide izvan petlje.
+            	console.log('UrlsList.length: ',urlsList.length)
+
+            } else{
+            	console.log('Item clicked')
+            }
+            
+	    }
+
+	    for(let i = index_list.length - 1; i >= 0; i--){
+            urlsList.splice(index_list[i], 1);  
+        }
 	    
 	   
 
