@@ -1,6 +1,6 @@
 asgiref==3.2.9
 cachetools==4.1.0
-Django==3.0.7
+Django==3.0.14
 django-background-tasks==1.2.5
 django-compat==1.0.15
 google-api-python-client==1.7.9
